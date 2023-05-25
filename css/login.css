@@ -1,0 +1,112 @@
+@import url('https://fonts.googleapis.com/css?family=Quicksand&display=swap');
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&display=swap');
+:root{
+    /* ===== Colors ===== */
+    --body-color: #18191a;
+    --darker-body-color: #131313;
+    --primary-color: #FC9C1A; /* #3a3b3c*/
+    --primary-color-hover: #F56D0A;
+    --primary-color-light: #0F0F0F;
+    --primary-color-focus: #0B0B0B;
+    --text-color: #ccc;
+    background-color: var(--body-color);
+}
+  #video {
+    object-fit: cover;
+    width: 100vw;
+    height: 100vh;
+    position: fixed;
+    top: 0;
+    left: 0;
+    filter: blur(10px);
+    opacity: 60%;
+  
+  }
+  form {
+    position: relative;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+  }
+p {
+    font-family: 'Quicksand', sans-serif;
+}
+a {
+    font-family: 'Quicksand', sans-serif;
+    transition: all 0.23s;
+    text-decoration: none;
+    color: var(--primary-color);
+}
+a:hover {
+    color: var(--primary-color-hover);
+}
+form {
+    margin-top: 50px;
+}
+table {
+    padding: 100px;
+    padding-top: 20px;
+    padding-bottom: 20px;
+    border-radius: 20px;
+    background-color: #151617;
+    margin: auto;
+    box-shadow: 0px 0px 100px rgba(0, 0, 0, 1);
+}
+h1 {
+    font-family: 'Quicksand', sans-serif;
+    color: var(--text-color);
+}
+p {
+    color: var(--text-color);
+}
+input {
+    border: none;
+    transition: all 0.5s;
+    width: 275px;
+    height: 40px;
+    background-color: var(--darker-body-color);
+    color: var(--text-color);
+    text-align: center;
+    border-radius: 5px;
+    outline: 0px solid #2c2929;
+}
+input:hover {
+    background-color: var(--primary-color-light);
+}
+input::placeholder {
+    font-family: 'Quicksand', sans-serif;
+    opacity: 0.7;
+    font-size: 15px;
+    color:rgba(218, 218, 218, 0.8);
+  }
+  textarea:focus, input:focus {
+    outline: none;
+    background-color: var(--primary-color-focus);
+}
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none !important;
+  appearance: none;
+  margin: 0 !important;
+}
+.login {
+    margin-top: 20px;
+    font-size: 15px;
+    transition: all 0.4s;
+    font-weight: 600;
+}
+.login:hover {
+    background-color: var(--primary-color);
+    color: var(--toggle-color);
+    cursor: pointer;
+}
+@media (max-width: 767px) {
+    table {
+        padding: 20px;
+        width: 100%;
+    }
+    td {
+        display:block;
+        text-align: center;
+    }
+}

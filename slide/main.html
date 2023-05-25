@@ -1,0 +1,66 @@
+<div id="myModal" class="modal">
+  <div class="modal-content">
+    <span class="close">&times;</span>
+    <h2>Online users</h2>
+    <br>
+    <p>japabeidz mc username saraksts + blakam bilde mc</p>
+  </div>
+</div>
+<h1 class="gameid" id="gameid">GameID: 0</h1>
+<div class="slideVisuals">
+  <div class="users">
+    <div class="user-list">
+      <h3 id="total-amount">$0.00 total</h3>
+      <h2 id="betsText">Bets</h2>
+      <div id="active-bets" class="active-bets">
+        <h1>No bets to display.</h1>
+      </div>
+    </div>
+  </div>
+  <div class="slide">
+    <h2 class="resultColor" id="countdown">Connecting...</h2>
+  </div>
+</div>
+<div class="lastBets" id="bet-container">
+</div>
+<form id="sendBet">
+  <div class="input-container">
+    <input id="betAmount" max="10000" min="0.10" step="0.01" type="number" placeholder="$1.00" required>
+    <input id="betTarget" type="number" step="0.01" placeholder="1.00x" required>
+  </div>
+  <div class="btn-container">
+    <button id="placeBet" type="submit" class="submit-btn">Place Bet</button>
+  </div>
+</form>
+<footer>
+  <h2 id="connectionStatus">Connecting</h2>
+  
+  <!-- modal end-->
+</footer>
+<script>
+  // Get the modal
+  var modal = document.getElementById("myModal");
+  
+  // Get the <a> element that opens the modal
+  var link = document.getElementById("connectionStatus");
+  
+  // Get the <span> element that closes the modal
+  var span = document.getElementsByClassName("close")[0];
+  
+  // When the user clicks on the link, open the modal
+  link.onclick = function() {
+    modal.style.display = "block";
+  }
+  
+  span.onclick = function() {
+    modal.style.display = "none";
+  }
+  
+  // When the user clicks anywhere outside of the modal, close it
+  window.onclick = function(event) {
+    if (event.target == modal) {
+      modal.style.display = "none";
+    }
+  }
+  </script>
+<script src="script.js"></script>
