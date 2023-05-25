@@ -33,23 +33,32 @@ socket.on('countdown', data => {
     socket.emit('lastBets', isMobile);
 
   })
+
   socket.on('lastBetsData', (data) => {
     const container = document.getElementById('bet-container');
     var color;
     container.innerHTML = '';
-
     data.forEach((bet) => {
-      if (bet < '1.90') {
-        color = 'lost'
+      if (bet.target < '1.90') {
+        color = 'lost';
       } else {
-        color = 'won'
+        color = 'won';
       }
+  
       const div = document.createElement('div');
-      div.className = 'betsColumn';
-      div.innerHTML = '<h2 class="' + color + '">' + bet + 'x</h2>'
+      div.className = 'tooltip betsColumn'; // Add 'tooltip' class
+      div.innerHTML = `
+        <h2 class="${color}">${bet.target}x</h2>
+        <div class="tooltip-content">
+          <p>ID: ${bet.gameID}</p>
+          <p>Target: ${bet.target}x</p>
+        </div>
+      `;
       container.appendChild(div);
-    })
-  })
+    });
+  });
+  
+  
   socket.on('connectionStatus', (data) => {
     const element = document.getElementById('connectionStatus');
     element.innerHTML = '<span class="dot"></span>Connected - <a id="myLink">' + data.userlist.length + ' users online</a>'; //uztaisit lai users online var clickot un paradas popup

@@ -193,14 +193,15 @@ function resolveBets(bets, serverTarget, gameID) {
 async function latestBets(limit) {
   try {
     const conn = await pool.getConnection();
-    const result = await conn.query('SELECT target FROM games ORDER BY id DESC LIMIT ?', [limit]);
+    const result = await conn.query('SELECT ID, target FROM games ORDER BY id DESC LIMIT ?', [limit]);
     conn.release();
-    console.log(result[0].map((row) => row.target));
-    return result[0].map((row) => row.target);
+    //console.log(result[0].map((row) => ({ gameID: row.ID, target: row.target })));
+    return result[0].map((row) => ({ gameID: row.ID, target: row.target }));
   } catch (err) {
     throw err;
   }
 }
+
 // connection
   io.on('connection', socket => {
     socket.on('new-user', token => {

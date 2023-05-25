@@ -695,3 +695,26 @@ footer h2 {
   cursor: pointer;
   transition: 0.2s all;
 }
+
+
+.tooltip {
+  position: relative;
+}
+
+.tooltip-content {
+  position: absolute;
+  bottom: 100%; /* Change 'top' to 'bottom' */
+  left: 0;
+  background-color: var(--darker-body-color);
+  padding: 5px;
+  border-radius: 5px;
+  border: 2px dashed var(--divider);
+  width: 135px; /* Adjust width as needed */
+  display: none; /* Hide the tooltip by default */
+}
+.tooltip:hover .tooltip-content {
+  color: var(--text-color);
+  font-size: 15px;
+  display: block; /* Show the tooltip on hover */
+}
+
