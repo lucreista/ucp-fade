@@ -58,6 +58,30 @@ socket.on('countdown', data => {
     });
   });
   
+  function clicking() {
+    socket.emit('getOnlineUsers');
+  }
+  socket.on('receivedOnlineUsers', (data) => {
+    const element = document.getElementById('onlineUsers');
+  
+    // Clear existing content
+    element.innerHTML = '';
+  
+    // Create a new <p> element for each name
+    data.forEach((name) => {
+      const div = document.createElement('div');
+      div.className = 'model-avatar';
+      div.innerHTML = `
+      <span class="modal-avatar">
+      <img src="https://minotar.net/avatar/${name}" alt>
+      <h2>${name}</h2>
+      </span>
+      </div>
+      `;
+      element.appendChild(div);
+    });
+  });
+  
   
   socket.on('connectionStatus', (data) => {
     const element = document.getElementById('connectionStatus');
@@ -68,7 +92,7 @@ socket.on('countdown', data => {
   socket.on('betStatus', (data) => {
     setTimeout (() => {
       toastr[data.type](data.description, data.title);
-    }, 1800)
+    }, 1700)
   })
   socket.on('activebets-update', function(activebets) {
     var betList = ''

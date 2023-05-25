@@ -342,10 +342,10 @@ body.dark .switch::before{
   }
 .hiddenIP {
     color: var(--text-color);
+    transition: all 0.4s;
 }
 .hiddenIP:hover {
     color: white;
-    transition: all 0.4s;
 }
 .file-upload button::before {
     font-family: 'boxicons';
@@ -669,8 +669,7 @@ footer h2 {
   cursor: pointer;
 }
 
-/* modal */
-/* Hide the modal by default */
+/* Modal */
 .modal {
   display: none;
   position: fixed;
@@ -680,22 +679,56 @@ footer h2 {
   width: 100%;
   height: 100%;
   overflow: auto;
-  background-color: rgba(0, 0, 0, 0.2);
+  background-color: rgba(0, 0, 0, 0.4);
+  transition: all var(--tran-05);
 }
-
-/* Modal content */
 .modal-content {
-  background-color: var(--darker-body-color);
+  background-color: var(--body-color);
   margin: 15% auto;
-  padding: 20px;
   border-radius: 7px;
   width: 80%;
   color: var(--text-color);
   max-width: 500px;
+  transition: all var(--tran-05);
 }
 
-/* Close button */
+.modal-header {
+  background-color: var(--darker-body-color);
+  padding: 10px;
+  border-radius: 7px 7px 0 0;
+  transition: all var(--tran-05);
+}
+
+.modal-header h2 {
+  padding-left: 5px;
+  font-size: 24px;
+  color: var(--text-color);
+}
+.modal-body {
+  margin-top: 20px;
+  margin: 15px;
+  padding-bottom: 25px;
+}
+.modal-avatar {
+  display: flex;
+  align-items: center;
+}
+
+.modal-avatar img {
+  max-width: 35px;
+  max-height: 35px;
+  border-radius: 6px;
+  margin: 4px;
+}
+
+.modal-avatar h2 {
+  font-size: 15px;
+  font-weight: 600;
+  margin-left: 5px;
+}
+
 .close {
+  margin-right: 10px;
   color: var(--text-color);
   float: right;
   font-size: 28px;
@@ -709,6 +742,8 @@ footer h2 {
   cursor: pointer;
   transition: 0.2s all;
 }
+
+
 
 
 .tooltip {

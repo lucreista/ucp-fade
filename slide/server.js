@@ -2,6 +2,7 @@ const https = require('https');
 const fs = require('fs');
 const { createPool } = require('mysql2/promise');
 const crypto = require('crypto');
+const { Socket } = require('socket.io');
 require('dotenv').config();
 const io = require('socket.io')(https.createServer({
   key: fs.readFileSync('/etc/letsencrypt/live/ucp.fade.lv/privkey.pem'),
@@ -238,7 +239,9 @@ async function latestBets(limit) {
       const bets = await latestBets(limit);
       socket.emit('lastBetsData',bets);
     })
-
+    socket.on('getOnlineUsers', () => {
+      socket.emit('receivedOnlineUsers', Object.values(users));
+    })
 
   // place bet
     socket.on('place-bet', async bet => {

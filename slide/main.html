@@ -1,9 +1,12 @@
-<div id="myModal" class="modal">
+<div id="connectionModal" class="modal">
   <div class="modal-content">
     <span class="close">&times;</span>
-    <h2>Online users</h2>
-    <br>
-    <p>japabeidz mc username saraksts + blakam bilde mc</p>
+    <div class="modal-header">
+      <h2>Online users</h2>
+    </div>
+    <div class="modal-body" id="onlineUsers">
+      <p>Loading users..</p>
+    </div>
   </div>
 </div>
 <h1 class="gameid" id="gameid">GameID: 0</h1>
@@ -35,28 +38,27 @@
 <footer>
   <h2 id="connectionStatus">Connecting</h2>
   
-  <!-- modal end-->
 </footer>
 <script>
-  // Get the modal
-  var modal = document.getElementById("myModal");
+  // get modal
+  var modal = document.getElementById("connectionModal");
   
-  // Get the <a> element that opens the modal
+  // <a> element open
   var link = document.getElementById("connectionStatus");
   
-  // Get the <span> element that closes the modal
+  // <span> closes
   var span = document.getElementsByClassName("close")[0];
   
-  // When the user clicks on the link, open the modal
+  // click link = open modal
   link.onclick = function() {
     modal.style.display = "block";
+    clicking();
   }
   
   span.onclick = function() {
     modal.style.display = "none";
   }
-  
-  // When the user clicks anywhere outside of the modal, close it
+  // click anywhere else = close
   window.onclick = function(event) {
     if (event.target == modal) {
       modal.style.display = "none";
