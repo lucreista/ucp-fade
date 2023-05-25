@@ -97,7 +97,7 @@ function startCountdownLoop() {
     function startGame() {
       isGameRunning = true;
       getLatestGameID().then((value) => {
-        gameID = value + 1;
+        gameID = value + 2;
         console.log('gameID ir :' + gameID);
       });
       console.log(activeBets)
@@ -107,7 +107,7 @@ function startCountdownLoop() {
       io.emit('gameStarted', slide.number)
       console.log(slide.number);
       registerGame(slide);
-      resolveBets(activeBets,slide.number)
+      resolveBets(activeBets,slide.number,gameID)
       // izdarit kko pirms activeBeti tiek clearoti
       activeBets = {}
       simplifiedBets = []
@@ -146,12 +146,18 @@ async function updateBalance(token, amount, operator) {
   const params = [amount, token];
   await pool.execute(sql, params);
 }
+async function registerBet(userID, gameID, username, target, amount) {
+  const query = 'INSERT INTO bets (uniqueid, gameID, user, target, amount, bet_time) VALUES (?, ?, ?, ?, ?, NOW())';
+  const params = [userID, gameID, username, target !== undefined ? target : null, amount];
+  await pool.execute(query, params);
+}
 
-function resolveBets(bets, serverTarget) {
+function resolveBets(bets, serverTarget, gameID) {
   for (let userId in bets) {
     const bet = bets[userId].bet;
     const { target, amount, token, socket} = bet;
     const username = users[bet.socket];
+    registerBet(userId, gameID, username, target !== undefined ? target : null, amount);
     if (target <= serverTarget) {
       console.log(`Win: ${username} won $${amount * target} (Target: ${target}x, Bet: ${amount})`);
       io.to(bet.socket).emit('betStatus', {
@@ -243,7 +249,6 @@ async function latestBets(limit) {
         uniqueid = crypto.randomBytes(16).toString('hex');
         const token = bet.token;
         const existingBet = Object.values(activeBets).filter(b => b.bet.token === token);
-        const numBets = existingBet.length;
         const totalValue = existingBet.reduce((total, betObj) => total + betObj.bet.amount, 0);
         if (existingBet.length < 5 && typeof bet.target === 'number' && typeof bet.amount === 'number') {
             const balance = await checkBalance(bet.token); // check balance
