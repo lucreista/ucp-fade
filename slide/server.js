@@ -227,8 +227,10 @@ async function latestBets(limit) {
     socket.on('disconnect', () => {
       const username = users[socket.id]
       console.log(`${username} disconnected (${socket.id})`)
-      delete users[socket.id]
-      io.emit('users', Object.values(users));
+      setTimeout(() => {
+        delete users[socket.id]
+        console.log(`User with ID ${username} has been removed. (ID ${socket.id})`);
+      }, 20000); // 20 seconds
       socket.emit('connectionStatus', { connected: false });
     })
 

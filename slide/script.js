@@ -48,7 +48,7 @@ socket.on('countdown', data => {
       const div = document.createElement('div');
       div.className = 'tooltip betsColumn'; // Add 'tooltip' class
       div.innerHTML = `
-        <h2 class="${color}">${bet.target}x</h2>
+        <a class="${color}"target="_blank" href="https://ucp.fade.lv/slide/game/?id=${bet.gameID}">${bet.target}x</a>
         <div class="tooltip-content">
           <p>ID: ${bet.gameID}</p>
           <p>Target: ${bet.target}x</p>
