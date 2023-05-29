@@ -47,6 +47,7 @@ socket.on('countdown', data => {
   
       const div = document.createElement('div');
       div.className = 'tooltip betsColumn'; // Add 'tooltip' class
+      div.id = 'lastBets';
       div.innerHTML = `
         <a class="${color}"target="_blank" href="https://ucp.fade.lv/slide/game/?id=${bet.gameID}">${bet.target}x</a>
         <div class="tooltip-content">
@@ -57,7 +58,7 @@ socket.on('countdown', data => {
       container.appendChild(div);
     });
   });
-  
+
   function clicking() {
     socket.emit('getOnlineUsers');
   }
@@ -66,7 +67,6 @@ socket.on('countdown', data => {
   
     // Clear existing content
     element.innerHTML = '';
-  
     // Create a new <p> element for each name
     data.forEach((name) => {
       const div = document.createElement('div');
@@ -85,8 +85,8 @@ socket.on('countdown', data => {
   
   socket.on('connectionStatus', (data) => {
     const element = document.getElementById('connectionStatus');
+    console.log('connectionStatus triggered.')
     element.innerHTML = '<span class="dot"></span>Connected - <a id="myLink">' + data.userlist.length + ' users online</a>'; //uztaisit lai users online var clickot un paradas popup
-    console.log(data.userlist.length);
   })
 // betstatus confirm (pienemts/atteikts)
   socket.on('betStatus', (data) => {
@@ -107,7 +107,8 @@ socket.on('countdown', data => {
     for (var i = 0; i < activebets.length; i++) {
       var bet = activebets[i]
       totalamount += bet.amount
-      var betText = bet.username + ' - ' + bet.target.toFixed(2) + 'x - ' + bet.amount.toFixed(2) + ' <i class="bx bxs-coin-stack"></i>';
+      var img = `<span class="modal-avatar"><img style="width: 20px;height: 20px;"src="https://minotar.net/avatar/${bet.username}" alt>`
+      var betText = img + bet.username + ' - ' + bet.target.toFixed(2) + 'x - ' + bet.amount.toFixed(2) + ' <i class="bx bxs-coin-stack"></i></span>';
       betList += '<p>' + betText + '</p>';
     }
     document.getElementById('betsText').innerHTML = 'Bets'
@@ -152,7 +153,7 @@ sendBetForm.addEventListener('submit', e => {
   const target = targetInput.value
   const token = sessionStorage.getItem('fadesession')
 
-  socket.emit('place-bet', { amount, target, token}, socket.id)
+  socket.emit('place-bet', { amount, target, token }, socket.id)
 })
 
 

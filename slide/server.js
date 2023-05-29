@@ -63,7 +63,7 @@ function startCountdownLoop() {
 
       //generate server hash
         const server_hash = crypto.randomBytes(32);
-        const beta = 1.0000000001 + (crypto.randomBytes(6).readUIntBE(0, 6) / 2**48) * 0.0000000002 * 0.2;
+        const beta = 1.0000000001;
       
         const f = crypto.createHmac('sha256', client_seed.toString())
                        .update(server_hash.toString())
@@ -124,7 +124,6 @@ function startCountdownLoop() {
     setInterval(() => {
       if (!isGameRunning) {
         countdownSeconds--;
-        //console.log(countdownSeconds);
         if (countdownSeconds === 0) {
           startGame();
         } else {
@@ -196,7 +195,6 @@ async function latestBets(limit) {
     const conn = await pool.getConnection();
     const result = await conn.query('SELECT ID, target FROM games ORDER BY id DESC LIMIT ?', [limit]);
     conn.release();
-    //console.log(result[0].map((row) => ({ gameID: row.ID, target: row.target })));
     return result[0].map((row) => ({ gameID: row.ID, target: row.target }));
   } catch (err) {
     throw err;
@@ -218,7 +216,7 @@ async function latestBets(limit) {
           };
           io.emit('gameID-update', gameID);
           io.emit('activebets-update', simplifiedBets)
-          socket.emit('connectionStatus', latestData);
+          io.emit('connectionStatus', latestData);
         })
         .catch(error => {
           console.error('Error querying database: ' + error.stack);
@@ -227,11 +225,16 @@ async function latestBets(limit) {
     socket.on('disconnect', () => {
       const username = users[socket.id]
       console.log(`${username} disconnected (${socket.id})`)
+      
       setTimeout(() => {
         delete users[socket.id]
+        const latestData = {
+          userlist: Object.values(users),
+          connected: true 
+        };
         console.log(`User with ID ${username} has been removed. (ID ${socket.id})`);
-      }, 20000); // 20 seconds
-      socket.emit('connectionStatus', { connected: false });
+        io.emit('connectionStatus', latestData);
+      }, 20000); // 20 seconds, pielikts jo ja uzreiz iznem useri kamer vinam ir aktivs bets, vina bets nesaglabajas.
     })
 
     socket.on('lastBets', async (platform) => {
@@ -267,7 +270,7 @@ async function latestBets(limit) {
               return;
             }
             
-          if (bet.target >= 1.09) {
+          if (bet.target > 1.09) {
             if (bet.amount+totalValue <= balance) {
               // accept bet jo balance ir
                 console.log('true');

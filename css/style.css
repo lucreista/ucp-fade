@@ -435,9 +435,13 @@ body.dark .switch::before{
     text-align: center;
     transition: var(--tran-03);
   }
-  .betsColumn h2 {
+  .betsColumn:hover {
+    background-color: var(--divider);
+  }
+  .betsColumn a {
     font-size: 15px;
     font-weight: 500;
+    text-decoration: none;
   }
   
   @media only screen and (max-width: 767px) {
@@ -445,10 +449,10 @@ body.dark .switch::before{
       grid-template-columns: repeat(4, 1fr);
     }
   }
-.betsColumn h2.lost{
+.betsColumn a.lost{
     color: #E51D1D;
 }
-.betsColumn h2.won{
+.betsColumn a.won{
     color: #2ACB1A;
 }
 

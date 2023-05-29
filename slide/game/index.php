@@ -10,8 +10,9 @@ if (isset($_GET["id"])) {
     $gameData = $result->fetch_assoc();
     
     if ($gameData) {
+        echo "<h3>Information about game</h3>";
         echo "Game ID: " . $gameData['ID'] . "<br>";
-        echo "Target: " . $gameData['target'] . "<br>";
+        echo "Target: " . $gameData['target'] . "x<br>";
         echo "Server Hash: " . $gameData['serverhash'] . "<br>";
         echo "Client Seed: " . $gameData['clientseed'] . "<br>";
         echo "Game Date: " . $gameData['game_date'] . "<br>";
@@ -26,16 +27,16 @@ if ($result->num_rows > 0) {
     echo "<h3>Bets: ($result->num_rows total)</h3>";
 
     while ($row = $result->fetch_assoc()) {
-        echo "User: " . $row['user'] . "<br>";
-        echo "Target Bet: " . $row['target'] . "x<br>";
-        echo "Amount Bet: " . $row['amount'] . "<br>";
-        echo "<br>";
+        echo "user: " . $row['user'] . "<br>";
+        echo "target Bet: " . $row['target'] . "x<br>";
+        echo "amount Bet: " . $row['amount'] . "<br>";
+        echo "status:"; if ($gameData['target'] >= $row['target']) { echo "Won";} else echo "Lost";
+        echo "<br><br>";
     }
 } else {
     echo "<br><h3>No bets found for the specified game ID.</h3>";
 }
 
-// ...
 
     } else {
         echo "No data found for the specified game ID.";
