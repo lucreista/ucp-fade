@@ -1,3 +1,13 @@
+<head>
+<link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+    <style>
+        * {
+            background-color: #18191a;
+            color: #ccc;
+        }
+    </style>
 <?php
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
@@ -10,7 +20,7 @@ if (isset($_GET["id"])) {
     $gameData = $result->fetch_assoc();
     
     if ($gameData) {
-        echo "<h3>Information about game</h3>";
+        echo "<h2>Information about game</h3>";
         echo "Game ID: " . $gameData['ID'] . "<br>";
         echo "Target: " . $gameData['target'] . "x<br>";
         echo "Server Hash: " . $gameData['serverhash'] . "<br>";
@@ -27,10 +37,10 @@ if ($result->num_rows > 0) {
     echo "<h3>Bets: ($result->num_rows total)</h3>";
 
     while ($row = $result->fetch_assoc()) {
-        echo "user: " . $row['user'] . "<br>";
+        echo "<p>user: " . $row['user'] . "<img style='margin-left: 5px;height: 15px;width:15px;'src='https://minotar.net/avatar/". $row['user'] ."'</p><br>";
         echo "target Bet: " . $row['target'] . "x<br>";
         echo "amount Bet: " . $row['amount'] . "<br>";
-        echo "status:"; if ($gameData['target'] >= $row['target']) { echo "Won";} else echo "Lost";
+        echo "status: "; if ($gameData['target'] >= $row['target']) { echo "Won";} else echo "Lost";
         echo "<br><br>";
     }
 } else {
@@ -45,3 +55,4 @@ if ($result->num_rows > 0) {
 
 
 ?>
+</body>

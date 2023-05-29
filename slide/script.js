@@ -34,7 +34,7 @@ socket.on('countdown', data => {
 
   })
 
-  socket.on('lastBetsData', (data) => {
+  socket.on('lastBetsData', (data) => { 
     const container = document.getElementById('bet-container');
     var color;
     container.innerHTML = '';
@@ -46,7 +46,7 @@ socket.on('countdown', data => {
       }
   
       const div = document.createElement('div');
-      div.className = 'tooltip betsColumn'; // Add 'tooltip' class
+      div.className = 'tooltip betsColumn'; // nosauties gribu =)
       div.id = 'lastBets';
       div.innerHTML = `
         <a class="${color}"target="_blank" href="https://ucp.fade.lv/slide/game/?id=${bet.gameID}">${bet.target}x</a>
@@ -62,12 +62,10 @@ socket.on('countdown', data => {
   function clicking() {
     socket.emit('getOnlineUsers');
   }
-  socket.on('receivedOnlineUsers', (data) => {
+  socket.on('receivedOnlineUsers', (data) => { // modal online useriii
     const element = document.getElementById('onlineUsers');
-  
-    // Clear existing content
+
     element.innerHTML = '';
-    // Create a new <p> element for each name
     data.forEach((name) => {
       const div = document.createElement('div');
       div.className = 'model-avatar';
@@ -83,7 +81,7 @@ socket.on('countdown', data => {
   });
   
   
-  socket.on('connectionStatus', (data) => {
+  socket.on('connectionStatus', (data) => { // updatojas katru reizi kad users jauns 
     const element = document.getElementById('connectionStatus');
     console.log('connectionStatus triggered.')
     element.innerHTML = '<span class="dot"></span>Connected - <a id="myLink">' + data.userlist.length + ' users online</a>'; //uztaisit lai users online var clickot un paradas popup

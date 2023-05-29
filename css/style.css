@@ -740,14 +740,14 @@ footer h2 {
   float: right;
   font-size: 28px;
   font-weight: bold;
+  transition: all var(--tran-05);
 }
 
 .close:hover,
 .close:focus {
-  color: var(--darker-body-color);
+  color: red;
   text-decoration: none;
   cursor: pointer;
-  transition: 0.2s all;
 }
 
 
@@ -759,18 +759,18 @@ footer h2 {
 
 .tooltip-content {
   position: absolute;
-  bottom: 100%; /* Change 'top' to 'bottom' */
+  bottom: 100%; 
   left: 0;
   background-color: var(--darker-body-color);
   padding: 5px;
   border-radius: 5px;
   border: 2px dashed var(--divider);
-  width: 135px; /* Adjust width as needed */
-  display: none; /* Hide the tooltip by default */
+  width: 135px;
+  display: none;
 }
 .tooltip:hover .tooltip-content {
   color: var(--text-color);
   font-size: 15px;
-  display: block; /* Show the tooltip on hover */
+  display: block;
 }
 
