@@ -108,7 +108,7 @@ socket.on('countdown', data => {
       var bet = activebets[i]
       totalamount += bet.amount
       var img = `<span class="modal-avatar"><img style="width: 20px;height: 20px;"src="https://minotar.net/avatar/${bet.username}" alt>`
-      var betText = img + bet.username + ' - ' + bet.target.toFixed(2) + 'x - ' + bet.amount.toFixed(2) + ' <i class="bx bxs-coin-stack"></i></span>';
+      var betText = img + bet.username + ' - ' + bet.target.toFixed(2) + 'x - ' + bet.amount.toFixed(0) + ' <i class="bx bxs-coin-stack"></i></span>';
       betList += '<p>' + betText + '</p>';
     }
     document.getElementById('betsText').innerHTML = 'Bets'

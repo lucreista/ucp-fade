@@ -57,7 +57,7 @@ $totalDeaths = $row['deaths_by_mobs'] + $row['deaths_by_suicide'] + $row['deaths
         $('#deaths').hover(function() {
             $(this).text('From mobs: <?= $row['deaths_by_mobs']; ?>, Suicide: <?= $row['deaths_by_suicide']; ?>, Players: <?= $row['deaths_by_players'];?>');
         }, function() {
-            $(this).text('Tu nomiri: <?= $totalDeaths; ?>');
+            $(this).text('Tu nomiri: <?= $totalDeaths; ?> reizes');
         });
     });
 </script>
