@@ -136,6 +136,14 @@ suffix : ''
 };
 var demo = new CountUp("coinsuh", oldcoins, coindiffrence , 2, 1, options);
 demo.start();
+
+const button = document.getElementById('placeBet')
+button.disabled = true;
+button.innerHTML = 'Place Bet (Cooldown)'
+setTimeout(() => {
+  button.disabled = false;
+  button.innerHTML = 'Place Bet'
+}, 1000)
     }
   })
   
@@ -145,7 +153,6 @@ demo.start();
 
 sendBetForm.addEventListener('submit', e => {
   e.preventDefault()
-
   const amountInput = document.getElementById('betAmount')
   const targetInput = document.getElementById('betTarget')
 
