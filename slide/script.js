@@ -105,8 +105,8 @@ socket.on('countdown', data => {
     for (var i = 0; i < activebets.length; i++) {
       var bet = activebets[i]
       totalamount += bet.amount
-      var img = `<span class="modal-avatar"><img style="width: 20px;height: 20px;"src="https://minotar.net/avatar/${bet.username}" alt>`
-      var betText = img + bet.username + ' - ' + bet.target.toFixed(2) + 'x - ' + bet.amount.toFixed(0) + ' <i class="bx bxs-coin-stack"></i></span>';
+      var img = `<a id="betsLink"href="https://ucp.fade.lv/dashboard/profile/${bet.username}"><span class="modal-avatar"><img style="width: 20px;height: 20px;"src="https://minotar.net/avatar/${bet.username}" alt>`
+      var betText = img + bet.username + ' - ' + bet.target.toFixed(2) + 'x - ' + bet.amount.toFixed(0) + ' <i class="bx bxs-coin-stack"></i></span></a>';
       betList += '<p>' + betText + '</p>';
     }
     document.getElementById('betsText').innerHTML = 'Bets'

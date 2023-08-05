@@ -313,13 +313,37 @@ body.dark .switch::before{
     margin-left: 40px;
     margin-right: 20px;
   }
+ .profilegrid {
+    grid-template-columns: repeat(1fr, 2fr);
+ }
   
   .column {
+    display: grid;
     background-color: var(--darker-body-color);
     color: var(--text-color);
     padding: 10px;
     border-radius: 10px;
     transition: var(--tran-03);
+  }
+  .profilecolumn {
+    padding: 0;
+  }
+  .bodyavatar {
+    grid-column: 1;
+    border-right: 1px solid var(--divider);
+    padding: 15px;
+    padding-right: 35px;
+    padding-left: 35px;
+    justify-content: center;
+    align-items: center;
+  }
+  .profile.text {
+    grid-column: 2;
+    display: flex;
+    flex-direction: column;
+  }
+  .profile.text p {
+    font-size: 17px;
   }
   
   @media only screen and (max-width: 767px) {
@@ -740,7 +764,6 @@ footer h2 {
   float: right;
   font-size: 28px;
   font-weight: bold;
-  transition: all var(--tran-05);
 }
 
 .close:hover,
@@ -748,6 +771,7 @@ footer h2 {
   color: red;
   text-decoration: none;
   cursor: pointer;
+  transition: 0.2s all;
 }
 
 
@@ -773,4 +797,61 @@ footer h2 {
   font-size: 15px;
   display: block;
 }
+/* search box */
+.search-container {
+  margin: 0;
+  padding: 0;
+  padding-top: 10px;
+  padding-left: 40px;
+  background: var(--body-color);
+  display: flex;
+  justify-content: flex-start;
+  align-items: flex-start;
+  flex-direction: column;
+  transition: var(--tran-05);
+}
+.searchbox{
+  position: relative;
+}
 
+.searchinput {
+  padding: 10px;
+  width: 60px;
+  height: 60px;
+  background: none;
+  border: 3px solid var(--primary-color);
+  border-radius: 50px;
+  box-sizing: border-box;
+  font-family: 'Poppins', sans-serif;
+  font-size: 26px;
+  color: var(--primary-color);
+  outline: none;
+  transition: .5s;
+}
+.searchbox:hover input{
+  width: 350px;
+  background: var(--darker-body-color);
+  border-radius: 10px;
+}
+.searchbox i{
+  position: absolute;
+  top: 50%;
+  right: 8px;
+  transform: translate(-50%,-50%);
+  font-size: 22px;
+  color: var(--primary-color);
+  transition: .2s;
+}
+.searchbox:hover i{
+  opacity: 0;
+  z-index: -1;
+}
+#betsLink {
+  text-decoration: none;
+  color: inherit;
+  transition: var(--tran-05);
+}
+#betsLink:hover {
+  color: var(--primary-color-hover);
+  transition: var(--tran-05);
+}

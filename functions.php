@@ -43,7 +43,24 @@ function authmeUserData($user) {
     $regdate = date('Y-m-d\ H:i', $timestamp);
     return array($date, $regdate, $row['ip'],$row['COUNT']);
 }
+function publicProfileData($user) {
+    include 'authdb.php';
+    $sqlusername = mysqli_real_escape_string($conn, $user);
+    $authResult = $conn->query(
+        "SELECT lastlogin,regdate FROM authme WHERE username = '$sqlusername'");
+    $authRow = $authResult->fetch_assoc();
+    $timestamp = (int)($authRow['lastlogin'] / 1000);
+    $date = date('Y-m-d\ H:i', $timestamp);
+    $timestamp = (int)($authRow['regdate'] / 1000); 
+    $regdate = date('Y-m-d\ H:i', $timestamp);
 
+    include 'db.php';
+    $sqlusername = mysqli_real_escape_string($conn, $user);
+    $webResult = $conn->query(
+        "SELECT lastloginweb,coins FROM users WHERE mcusername = '$sqlusername'");
+    $webRow = $webResult->fetch_assoc();
+    return array($date, $regdate, $webRow['coins'], $webRow['lastloginweb']);
+}
 function offlineUUID($user) {
     $data = hex2bin(md5("OfflinePlayer:" . $user));
     $data[6] = chr(ord($data[6]) & 0x0f | 0x30);

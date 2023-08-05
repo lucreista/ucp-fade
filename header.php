@@ -28,7 +28,9 @@
         <header>
             <div class="image-text">
                 <span class="image">
+                    <a href="https://ucp.fade.lv/dashboard/profile/<?= "$_SESSION[username]" ?>">
                     <img src="https://minotar.net/avatar/<?="$_SESSION[username]" ?>" alt="">
+                        </a>
                 </span>
 
                 <div class="text logo-text">
@@ -46,6 +48,13 @@
                         <a href="/dashboard">
                             <i class='bx bx-home-alt icon' ></i>
                             <span class="text nav-text">Kontrolpanelis</span>
+                        </a>
+                    </li>
+
+                    <li class="nav-link">
+                        <a href="/dashboard/profile/<?=$_SESSION['username']?>">
+                            <i class='bx bx-user icon' ></i>
+                            <span class="text nav-text">Mans Profils</span>
                         </a>
                     </li>
 
