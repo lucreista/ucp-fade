@@ -4,3 +4,5 @@ db.php
 statsdb.php
 *.env
 .env
+uploads/
+temp/

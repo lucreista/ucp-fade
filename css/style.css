@@ -316,7 +316,14 @@ body.dark .switch::before{
  .profilegrid {
     grid-template-columns: repeat(1fr, 2fr);
  }
-  
+ .servercontainer {
+  display: grid;
+  grid-template-columns: repeat(1, 1fr);
+  grid-column: 1;
+  grid-gap: 10px;
+  margin-left: 40px;
+  margin-right: 20px;
+}
   .column {
     display: grid;
     background-color: var(--darker-body-color);

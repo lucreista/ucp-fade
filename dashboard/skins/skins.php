@@ -1,21 +1,4 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-<script src="../../js/notify.min.js"></script>
-<script type="text/javascript"> 
-    $.notify.addStyle('ErrorNotify', {
-  html: "<div><i class='fa-solid fa-circle-exclamation'></i><span data-notify-text/></div>",
-  classes: {
-    base: {
-      "white-space": "nowrap",
-      "color": "white",
-      "background-color": "#131313",
-      "padding": "10px",
-      "font-family": 'Quicksand',
-      "border-radius": '6px',
-      "border": ' 1px solid #FC9C1A'
-    }
-  }
-});
-</script>
 <div class="file-upload">
   <div class="input-group">
     <label class="input-group-btn">
@@ -43,10 +26,15 @@
     xhr.onreadystatechange = function() {
       if (xhr.readyState == 4 && xhr.status == 200) {
         var responsephp = xhr.responseText;
-        $.notify(responsephp, {
-                style: 'ErrorNotify'
-                });
+        $notConnected = '/No player matching/i';
+        console.log(responsephp);
+        if (responsephp === "") {
+          toastr["success"]("Skins uzlikts veiksmīgi", "Success");
+        }
+        else {
+        toastr["error"](responsephp, "Error");
       }
+       }
     };
     xhr.send(formData);
   });

@@ -31,6 +31,38 @@ function logOut() {
     }
     }
 
+    function serverData() {
+        include 'db.php';
+        $result = $conn->query("SELECT PlaceholerName, PlaceholerValue FROM serverdata"); 
+        if ($result->num_rows > 0) {
+            $data = array(); 
+            $allEmpty = true; // Initialize a variable to track if all values are empty
+            while ($row = $result->fetch_assoc()) {
+                $placeholderName = $row['PlaceholerName'];
+                $placeholderValue = $row['PlaceholerValue'];
+                $data[$placeholderName] = $placeholderValue;
+                
+                // Check if the current value is not empty (not a single space)
+                if ($placeholderValue !== " ") {
+                    $allEmpty = false;
+                }
+            }
+            
+            // If all values were empty (single space), return "offline"
+            if ($allEmpty) {
+                return "offline";
+            }
+            
+            // If any value is not empty, return the data as-is
+            return $data;
+        } else {
+            return "offline"; // If there are no rows, consider it as "offline"
+        }
+    }
+    
+    
+    
+    
 function authmeUserData($user) {
     include 'authdb.php';
     $result = $conn->query(
