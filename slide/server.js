@@ -204,16 +204,33 @@ async function latestBets(limit) {
 // connection
   io.on('connection', socket => {
     socket.on('new-user', token => {
-      const query = 'SELECT mcusername FROM users WHERE token = ?';
+      const query = `
+      SELECT
+        u.mcusername,
+        g.avg_target,
+        g.max_target
+      FROM users u
+      INNER JOIN (
+        SELECT AVG(target) AS avg_target, MAX(target) AS max_target
+        FROM games
+      ) g ON 1 = 1
+      WHERE u.token = ?
+    `;
       pool.query(query, [token])
         .then(([results, fields]) => {
           const username = results[0].mcusername;
           users[socket.id] = username;
           console.log(username + ` connected (${socket.id})`);
+          console.log(results[0].avg_target);
           const latestData = {
             userlist: Object.values(users),
-            connected: true 
+            connected: true
           };
+          const statsGame = {
+            avgTarget: results[0].avg_target,
+            maxTarget: results[0].max_target
+          }
+          io.emit('statsGame', statsGame);
           io.emit('gameID-update', gameID);
           io.emit('activebets-update', simplifiedBets)
           io.emit('connectionStatus', latestData);

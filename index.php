@@ -94,7 +94,7 @@ function ucpCheck($user,$token) {
         } else {
             // pirmo reizi ucp loginojas
             $date = date('m/d/Y h:i a', time());
-            $sql = "INSERT INTO `users` (mcusername, token, lastloginweb,coins) VALUES ('$sqlusername', '$token', '$date', '0')";
+            $sql = "INSERT INTO `users` (mcusername, token, lastloginweb, coins, customskin) VALUES ('$sqlusername', '$token', '$date', '0', '0')";
             $result = $conn->query($sql);
         }
 }

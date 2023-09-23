@@ -1,8 +1,7 @@
 <?php 
 $variables = authmeUserData($_SESSION['username']);
-$serverdata = serverdata();
 ?>
-<div class="text"><?= $_SESSION['uuid'];?></div>
+<div class="text">Spēlētaja info</div>
         <div class="container">
   <div class="column">
     <h2>Profili</h2>
@@ -22,9 +21,10 @@ $serverdata = serverdata();
   </div>
 </div>
 <div class="divider"></div>
+<div class="text">Servera info</div>
 <div class="container">
 <div class="column"><?php 
-$data = serverData(); // Get the data
+$data = serverData();
 if (!isset($data['%server_online%'])) {
   echo "<h2>Server Status <span style='color: red'>Offline</span></h2>";
   echo "<p>Server is offline :(</p>";
@@ -38,21 +38,23 @@ $serverUptime = isset($data['%server_uptime%']) ? $data['%server_uptime%'] : '';
 $servername = isset($data['%server_name%']) ? $data['%server_name%'] : '';
 
 function tpsColor($tps) {
-  switch ($tps) {
-    case ($tps >= 18 && $tps <= 20):
-      return 'green';
-    case ($tps >= 15 && $tps < 18):
-      return 'orange';
-    case ($tps >= 1 && $tps < 15):
-      return 'red';
+  if ($tps >= 18) {
+    return 'green';
+  } else if ($tps > 15) {
+    return 'orange';
+  } else if ($tps > 0) {
+    return 'red';
+  } else if ($tps == "*20.0") {
+    return 'lime';
   }
+  else return 'blue';
 }
-$tpsColor = tpsColor($tps);
-echo "<p>Cnline Players: $serverOnlineContent</p>";
-echo "<p>Server TPS: <span style='color: $tpsColor'>$serverTps</span></p>";
-echo "<p>Server Uptime: $serverUptime </p>";
-echo "<p>Richest player: $playerStatusContent($$balanceContent)</p>";
-echo "<p>IP: $servername</p>";
+$tpsColor = tpsColor($serverTps);
+echo "<p>Cnline Players: $serverOnlineContent</p>
+<p>Server TPS: <span style='color: $tpsColor'>$serverTps</span></p>
+<p>Server Uptime: $serverUptime </p>
+<p>Richest player: $playerStatusContent($$balanceContent)</p>
+<p>IP: $servername</p>";
 }
 ?>
   </div>

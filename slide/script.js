@@ -80,10 +80,14 @@ socket.on('countdown', data => {
     });
   });
   
-  
+  socket.on('statsGame', (data) => {
+    console.log('statsGame received');
+    document.getElementById('avgTarget').innerHTML = data.avgTarget.toFixed(2) + "x";
+    document.getElementById('maxTarget').innerHTML = data.maxTarget.toLocaleString() + "x";
+    console.log(data.maxTarget);
+  })
   socket.on('connectionStatus', (data) => { // updatojas katru reizi kad users jauns 
     const element = document.getElementById('connectionStatus');
-    console.log('connectionStatus triggered.')
     element.innerHTML = '<span class="dot"></span>Connected - <a id="myLink">' + data.userlist.length + ' users online</a>'; //uztaisit lai users online var clickot un paradas popup
   })
 // betstatus confirm (pienemts/atteikts)

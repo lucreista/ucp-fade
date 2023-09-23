@@ -18,6 +18,7 @@
     <p>Reģistrējies: <?= $publicData[1]; ?></p>
     <p>Pēdējo reizi serverī: <?= $publicData[0]; ?></p>
     <p>Monētas: <?= number_format($publicData[2], 2, '.', ',');; ?> <i class='bx bxs-coin-stack'> </i></p>
+    <p>Custom Skin: <?= $publicData[4]; ?></p>
 </div>
   </div>
 </div>

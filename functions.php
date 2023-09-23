@@ -89,9 +89,9 @@ function publicProfileData($user) {
     include 'db.php';
     $sqlusername = mysqli_real_escape_string($conn, $user);
     $webResult = $conn->query(
-        "SELECT lastloginweb,coins FROM users WHERE mcusername = '$sqlusername'");
+        "SELECT lastloginweb,coins,customskin FROM users WHERE mcusername = '$sqlusername'");
     $webRow = $webResult->fetch_assoc();
-    return array($date, $regdate, $webRow['coins'], $webRow['lastloginweb']);
+    return array($date, $regdate, $webRow['coins'], $webRow['lastloginweb'], $webRow['customskin']);
 }
 function offlineUUID($user) {
     $data = hex2bin(md5("OfflinePlayer:" . $user));

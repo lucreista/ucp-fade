@@ -27,6 +27,7 @@ if (isset($_FILES['file-input'])) {
     $new_file_name = $_SESSION['username'] . '.' . $file_ext;
     $upload_path = $upload_dir . $new_file_name;
     move_uploaded_file($file_tmp, $upload_path);
+    updateProfile($_SESSION['username'],$file_ext);
     mcRcon($_SESSION['username'],$new_file_name);
        } else if (!in_array($file_ext, $allowed_types)) {
     echo "Atlautie faila tipi: .jpg vai .png";
@@ -46,7 +47,6 @@ $link = "https://ucp.fade.lv/dashboard/skins/uploads/$file";
 try {
   // Create an RCON instance and establish a connection
   $rcon = new Rcon($host, $port, $password, $timeout);
-
   if ($rcon->connect()) {
     $command = "skin set $username $link";
       $response = $rcon->sendCommand($command);
@@ -57,5 +57,10 @@ try {
 } catch (Exception $e) {
   echo "An error occurred: " . $e->getMessage();
 }
+}
+function updateProfile($username,$link) {
+  include '../../db.php';
+  $sql = "UPDATE users SET customskin = 'set' WHERE mcusername = '$username'";
+  $result = $conn->query($sql);
 }
 ?>

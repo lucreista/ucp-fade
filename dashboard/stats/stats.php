@@ -161,31 +161,3 @@ $totalDeaths = $row['deaths_by_mobs'] + $row['deaths_by_suicide'] + $row['deaths
   </div>
 </div>
 
-
-
-<div class="divider"></div>
-<div class="text">Damage</div>
-<div class="container">
-  <div class="column">
-    <h2>PvP damage</h2>
-    <p>Spēlētājiem esi izdarījis <?= $row['damage_players']; ?> damage</p>
-  </div>
-  <div class="column">
-    <?php // mob + animal damage saskaitits
-    $pveDamage = $row['damage_mobs'] + $row['damage_animals'];
-    ?>
-    <h2>PvE damage</h2>
-    <p>Mobiem esi izdarījis <?= $pveDamage ?> damage</p>
-  </div>
-  <div class="column">
-    <h2>XXX</h2>
-    <p>XXX</p>
-  </div>
-  <div class="column">
-  <h2>XXX</h2>
-  <p>XXX</p>
-  </div>
-</div>
-<div class="divider"></div>
-
-

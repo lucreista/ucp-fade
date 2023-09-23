@@ -313,6 +313,13 @@ body.dark .switch::before{
     margin-left: 40px;
     margin-right: 20px;
   }
+  .container4 {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    grid-gap: 10px;
+    margin-left: 40px;
+    margin-right: 20px;
+  }
  .profilegrid {
     grid-template-columns: repeat(1fr, 2fr);
  }
