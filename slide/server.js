@@ -21,11 +21,18 @@ const io = require('socket.io')(https.createServer({
     connectionLimit: 50,
     queueLimit: 0
   });
-
-  let users = {};
+// slide variables
+  let slideusers = {};
   let activeBets = {}
   var simplifiedBets = []
   let gameID;
+
+// chat variables
+let chatusers = {};
+
+// namespaces lai ar vienu socket.io serveri var darities
+  const slideServer = io.of("/slide");
+  const chatServer = io.of("/chat");
 
   pool.getConnection()
   .then((connection) => {
@@ -83,7 +90,7 @@ function startCountdownLoop() {
       
 
     function broadcastCountdown() {
-      io.emit('countdown', countdownSeconds);
+      slideServer.emit('countdown', countdownSeconds);
     }
     function registerGame(slide) {
       const query = 'INSERT INTO `games` (`target`, `clientseed`, `serverhash`) VALUES (?, ?, ?)';
@@ -105,7 +112,7 @@ function startCountdownLoop() {
       countdownSeconds = 15;
       const slide = slideGen();
       console.log(slide);
-      io.emit('gameStarted', slide.number)
+      slideServer.emit('gameStarted', slide.number)
       console.log(slide.number);
       registerGame(slide);
       resolveBets(activeBets,slide.number,gameID)
@@ -116,8 +123,8 @@ function startCountdownLoop() {
         isGameRunning = false;
         countdownSeconds = 15;
         broadcastCountdown();
-        io.emit('gameID-update', gameID);
-        io.emit('activebets-update', simplifiedBets)
+        slideServer.emit('gameID-update', gameID);
+        slideServer.emit('activebets-update', simplifiedBets)
       }, 5000);
     }
   
@@ -156,11 +163,11 @@ function resolveBets(bets, serverTarget, gameID) {
   for (let userId in bets) {
     const bet = bets[userId].bet;
     const { target, amount, token, socket} = bet;
-    const username = users[bet.socket];
+    const username = slideusers[bet.socket];
     registerBet(userId, gameID, username, target !== undefined ? target : null, amount);
     if (target <= serverTarget) {
       console.log(`Win: ${username} won $${amount * target} (Target: ${target}x, Bet: ${amount})`);
-      io.to(bet.socket).emit('betStatus', {
+      slideServer.to(bet.socket).emit('betStatus', {
         title: 'Win',
         description: `Tu uzvarēji ${amount * target} <i class="bx bxs-coin-stack"></i>`,
         type: 'success'
@@ -182,7 +189,7 @@ function resolveBets(bets, serverTarget, gameID) {
 
       // lost notification
       console.log(`Loss: ${username} lost $${amount} (Target: ${target}x, Bet: ${amount})`);
-      io.to(bet.socket).emit('betStatus', {
+      slideServer.to(bet.socket).emit('betStatus', {
         title: 'Lose',
         description: `Tu zaudēji ${amount}<i class="bx bxs-coin-stack"></i>`,
         type: 'error'
@@ -200,9 +207,28 @@ async function latestBets(limit) {
     throw err;
   }
 }
-
-// connection
-  io.on('connection', socket => {
+// connection to chat
+chatServer.on('connection', socket => {
+  socket.on('new-user', token => {
+    const query = 'SELECT mcusername FROM users WHERE token = ?';
+    pool.query(query, [token])
+        .then(([results, fields]) => {
+          const username = results[0].mcusername;
+          chatusers[socket.id] = username;
+          console.log(username + ` connected to CHAT (${socket.id})`);
+        })
+        .catch(error => {
+          console.error('Error querying database: ' + error.stack);
+        });
+        socket.on('disconnect', () => {
+          const username = chatusers[socket.id]
+          delete chatusers[socket.id]
+          console.log(`${username} disconnected from CHAT (${socket.id})`)
+        })
+  });
+}); 
+// connection to slide
+  slideServer.on('connection', socket => {
     socket.on('new-user', token => {
       const query = `
       SELECT
@@ -228,11 +254,11 @@ async function latestBets(limit) {
       pool.query(query, [token])
         .then(([results, fields]) => {
           const username = results[0].mcusername;
-          users[socket.id] = username;
-          console.log(username + ` connected (${socket.id})`);
-          console.log(results);
+          slideusers[socket.id] = username;
+          console.log(username + ` connected to SLIDE (${socket.id})`);
+          //console.log(results);
           const latestData = {
-            userlist: Object.values(users),
+            userlist: Object.values(slideusers),
             connected: true
           };
           const statsGame = {
@@ -242,27 +268,27 @@ async function latestBets(limit) {
             highestBetID: results[0].gameID,
             highestBetUser: results[0].user
           }
-          io.emit('statsGame', statsGame);
-          io.emit('gameID-update', gameID);
-          io.emit('activebets-update', simplifiedBets)
-          io.emit('connectionStatus', latestData);
+          slideServer.emit('statsGame', statsGame);
+          slideServer.emit('gameID-update', gameID);
+          slideServer.emit('activebets-update', simplifiedBets)
+          slideServer.emit('connectionStatus', latestData);
         })
         .catch(error => {
           console.error('Error querying database: ' + error.stack);
         });
     });
     socket.on('disconnect', () => {
-      const username = users[socket.id]
-      console.log(`${username} disconnected (${socket.id})`)
+      const username = slideusers[socket.id]
+      console.log(`${username} disconnected from SLIDE (${socket.id})`)
       
       setTimeout(() => {
-        delete users[socket.id]
+        delete slideusers[socket.id]
         const latestData = {
-          userlist: Object.values(users),
+          userlist: Object.values(slideusers),
           connected: true 
         };
         console.log(`User with ID ${username} has been removed. (ID ${socket.id})`);
-        io.emit('connectionStatus', latestData);
+        slideServer.emit('connectionStatus', latestData);
       }, 20000); // 20 seconds, pielikts jo ja uzreiz iznem useri kamer vinam ir aktivs bets, vina bets nesaglabajas.
     })
 
@@ -271,10 +297,10 @@ async function latestBets(limit) {
         limit = 4
       } else limit = 12;
       const bets = await latestBets(limit);
-      socket.emit('lastBetsData',bets);
+      slideServer.emit('lastBetsData',bets);
     })
     socket.on('getOnlineUsers', () => {
-      socket.emit('receivedOnlineUsers', Object.values(users));
+      slideServer.emit('receivedOnlineUsers', Object.values(slideusers));
     })
 
   // place bet
@@ -291,7 +317,7 @@ async function latestBets(limit) {
         if (existingBet.length < 5 && typeof bet.target === 'number' && typeof bet.amount === 'number') {
             const balance = await checkBalance(bet.token); // check balance
             if (bet.amount <= 0.09) {
-              io.to(socket.id).emit('notification', {
+              slideServer.to(socket.id).emit('notification', {
                 title: 'Invalid Bet',
                 description: `Minimālais bets ir 0.10 <i class="bx bxs-coin-stack"></i>`,
                 type: 'error'
@@ -304,21 +330,21 @@ async function latestBets(limit) {
               // accept bet jo balance ir
                 console.log('true');
                 activeBets[uniqueid] = {bet}
-                io.to(socket.id).emit('notification', {
+                slideServer.to(socket.id).emit('notification', {
                   title: 'Bet Successful',
                   description: `Target: ${bet.target}x , Bet: ${bet.amount}<i class="bx bxs-coin-stack"></i>`,
                   type: 'success',
                   amount: bet.amount
                 });
                 simplifiedBets.push({
-                  username: users[socket.id],
+                  username: slideusers[socket.id],
                   amount: bet.amount,
                   target: bet.target
                 });
-                io.emit('activebets-update', simplifiedBets)
+                slideServer.emit('activebets-update', simplifiedBets)
             } else {
               // deny likmi jo balances nav
-              io.to(socket.id).emit('notification', {
+              slideServer.to(socket.id).emit('notification', {
                 title: 'Nepietiek balance',
                 description: `Tev ir tikai ${balance-totalValue} <i class="bx bxs-coin-stack"></i>!`,
                 type: 'error'
@@ -326,7 +352,7 @@ async function latestBets(limit) {
                 console.log('false');
             } } else {  // kad bet target ir lower par 1.01
 
-              io.to(socket.id).emit('notification', {
+              slideServer.to(socket.id).emit('notification', {
                 title: 'Minimalais target',
                 description: `Minimālais target ir 1.01x`,
                 type: 'error'
@@ -336,7 +362,7 @@ async function latestBets(limit) {
         } else {
           // deny likmi jo jau uzlicis 5 betus
             console.log("user already has a bet")
-            io.to(socket.id).emit('notification', {
+            slideServer.to(socket.id).emit('notification', {
               title: 'Bet Limit',
               description: `Katrs spēlētājs var likt 5 likmes`,
               type: 'error'

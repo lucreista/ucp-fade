@@ -1,6 +1,10 @@
-const socket = io('https://ucp.fade.lv:8443')
+const socket = io('https://ucp.fade.lv:8443/slide', {
+  path: '/socket.io/',
+  secure: true, // Use secure WebSocket connection
+});
 socket.on("connect", () => {
   socket.emit('new-user',sessionStorage.getItem('fadesession'))
+  console.log('connected to slide');
   });
 // countdown
 const countdownEl = document.getElementById('countdown')

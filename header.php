@@ -85,6 +85,13 @@
                             <span class="text nav-text">Slide</span>
                         </a>
                     </li>
+
+                    <li class="nav-link">
+                        <a  href="/chat">
+                            <i class='bx bxs-chat icon' ></i>
+                            <span class="text nav-text">Chat</span>
+                        </a>
+                    </li>
                 </ul>
             </div>
 
