@@ -56,22 +56,22 @@ function startCountdownLoop() {
   
     function slideGen() {
       // generate client seed
-        const unix = Math.floor(Date.now() / 1000);
-        const randomString = crypto.randomBytes(12).toString('hex');
+        const unix = Math.floor(Date.now() / 1000); // iegust tagadejo unix laiku sekundees
+        const randomString = crypto.randomBytes(12).toString('hex'); // izdoma random hexadecimal string ar 24 garumu
 
-        const client_seed = unix + randomString;
+        const client_seed = unix + randomString; // apvieno unix laiku + hexadecimalo string kopa
 
       //generate server hash
-        const server_hash = crypto.randomBytes(32);
-        const beta = 1.0000000001;
+        const server_hash = crypto.randomBytes(32); // izdoma 32 bitu string
+        const beta = 1.0000000001; // konstante kas tiks izmantots aprēkiņos
       
-        const f = crypto.createHmac('sha256', client_seed.toString())
-                       .update(server_hash.toString())
-                       .digest();
-        const a = parseInt(f.toString('hex'), 16) / Math.pow(2, 256);
-        const d = beta / (1 - a);
+        const f = crypto.createHmac('sha256', client_seed.toString()) // izveido HMAC hash izmantojot client seed
+                       .update(server_hash.toString()) // atjaunina hash ar server hash
+                       .digest(); // iegust hashu bitos
+        const a = parseInt(f.toString('hex'), 16) / Math.pow(2, 256); // parveido hash baitus par floating-point ciparu
+        const d = beta / (1 - a); // veic aprekinus izmantojot beta konstanti un floating-point ciparu
         const e = Math.floor(102 * d) / 102;
-        const x = Math.min(Math.max(e,1), 2**20);
+        const x = Math.min(Math.max(e,1), 2**20); // ierobežo rezultatu noteiktaja diapazona
         
         const result = {
           number: x.toFixed(2),
@@ -208,27 +208,39 @@ async function latestBets(limit) {
       SELECT
         u.mcusername,
         g.avg_target,
-        g.max_target
+        g.max_target,
+        b.gameID,
+        b.amount,
+        b.user
       FROM users u
       INNER JOIN (
         SELECT AVG(target) AS avg_target, MAX(target) AS max_target
         FROM games
       ) g ON 1 = 1
+      LEFT JOIN (
+        SELECT gameID, amount, user
+        FROM bets
+        WHERE amount = (SELECT MAX(amount) FROM bets)
+      ) b ON 1 = 1
       WHERE u.token = ?
+      LIMIT 1
     `;
       pool.query(query, [token])
         .then(([results, fields]) => {
           const username = results[0].mcusername;
           users[socket.id] = username;
           console.log(username + ` connected (${socket.id})`);
-          console.log(results[0].avg_target);
+          console.log(results);
           const latestData = {
             userlist: Object.values(users),
             connected: true
           };
           const statsGame = {
             avgTarget: results[0].avg_target,
-            maxTarget: results[0].max_target
+            maxTarget: results[0].max_target,
+            highestBet: results[0].amount,
+            highestBetID: results[0].gameID,
+            highestBetUser: results[0].user
           }
           io.emit('statsGame', statsGame);
           io.emit('gameID-update', gameID);
@@ -287,7 +299,7 @@ async function latestBets(limit) {
               return;
             }
             
-          if (bet.target > 1.09) {
+          if (bet.target > 1.00) {
             if (bet.amount+totalValue <= balance) {
               // accept bet jo balance ir
                 console.log('true');
@@ -305,24 +317,24 @@ async function latestBets(limit) {
                 });
                 io.emit('activebets-update', simplifiedBets)
             } else {
-              // deny bet jo balances nav
+              // deny likmi jo balances nav
               io.to(socket.id).emit('notification', {
                 title: 'Nepietiek balance',
                 description: `Tev ir tikai ${balance-totalValue} <i class="bx bxs-coin-stack"></i>!`,
                 type: 'error'
               });
                 console.log('false');
-            } } else {  // kad bet target ir lower par 1.09
+            } } else {  // kad bet target ir lower par 1.01
 
               io.to(socket.id).emit('notification', {
                 title: 'Minimalais target',
-                description: `Minimālais target ir 1.10x`,
+                description: `Minimālais target ir 1.01x`,
                 type: 'error'
               });
 
             }
         } else {
-          // deny bet jo jau uzlicis 5 betus
+          // deny likmi jo jau uzlicis 5 betus
             console.log("user already has a bet")
             io.to(socket.id).emit('notification', {
               title: 'Bet Limit',

@@ -81,10 +81,11 @@ socket.on('countdown', data => {
   });
   
   socket.on('statsGame', (data) => {
-    console.log('statsGame received');
     document.getElementById('avgTarget').innerHTML = data.avgTarget.toFixed(2) + "x";
     document.getElementById('maxTarget').innerHTML = data.maxTarget.toLocaleString() + "x";
-    console.log(data.maxTarget);
+    document.getElementById('highestBetUser').innerHTML = "Lielākā likme - @" + data.highestBetUser;
+    document.getElementById('highestBet').innerHTML = data.highestBet.toLocaleString() + "<i class='bx bxs-coin-stack'> </i>";
+    document.getElementById('highestBetID').href = "https://ucp.fade.lv/slide/game/?id=" + data.highestBetID;
   })
   socket.on('connectionStatus', (data) => { // updatojas katru reizi kad users jauns 
     const element = document.getElementById('connectionStatus');
@@ -94,7 +95,7 @@ socket.on('countdown', data => {
   socket.on('betStatus', (data) => {
     setTimeout (() => {
       toastr[data.type](data.description, data.title);
-    }, 1700)
+    }, 2100)
   })
   socket.on('activebets-update', function(activebets) {
     var betList = ''

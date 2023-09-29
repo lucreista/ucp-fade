@@ -25,6 +25,7 @@
     --primary-color: #FC9C1A;
     --primary-color-hover: #FFAB5B;
     --primary-color-light: #F6F5FF;
+    --column-hover: #C0C3CB;
     --toggle-color: #DDD;
     --text-color: #707070;
     --divider: #D2D2D2;
@@ -48,6 +49,7 @@ body.dark{
     --toggle-color: #fff;
     --text-color: #ccc;
     --darker-body-color: #131313;
+    --column-hover: #0A0A0A;
     --divider: #2A2A2A;
     --primary-color-hover: #C46001;
 }
@@ -338,6 +340,9 @@ body.dark .switch::before{
     padding: 10px;
     border-radius: 10px;
     transition: var(--tran-03);
+  }
+  .column:hover {
+    background-color: var(--column-hover);
   }
   .profilecolumn {
     padding: 0;
