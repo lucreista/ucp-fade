@@ -3,6 +3,7 @@ const fs = require('fs');
 const { createPool } = require('mysql2/promise');
 const crypto = require('crypto');
 const { Socket } = require('socket.io');
+const escapeHtml = require('escape-html'); // for chat
 require('dotenv').config();
 const io = require('socket.io')(https.createServer({
   key: fs.readFileSync('/etc/letsencrypt/live/ucp.fade.lv/privkey.pem'),
@@ -28,6 +29,10 @@ const io = require('socket.io')(https.createServer({
   let gameID;
 
 // chat variables
+const messageTimestamps = {};
+const rateLimitInterval = 1000; // 1 second
+const maxMessagesPerInterval = 3;
+const connectedSockets = {};
 let chatusers = {};
 
 // namespaces lai ar vienu socket.io serveri var darities
@@ -210,16 +215,74 @@ async function latestBets(limit) {
 // connection to chat
 chatServer.on('connection', socket => {
   socket.on('new-user', token => {
+    if (token === undefined || token === null) {
+      socket.disconnect();
+      return;
+    }
     const query = 'SELECT mcusername FROM users WHERE token = ?';
     pool.query(query, [token])
         .then(([results, fields]) => {
+          if (results.length === 0 || connectedSockets[socket.id]) {
+            socket.disconnect();
+            return;
+          }
           const username = results[0].mcusername;
+          connectedSockets[socket.id] = true;
           chatusers[socket.id] = username;
           console.log(username + ` connected to CHAT (${socket.id})`);
+          chatServer.to(socket.id).emit('receivedMessage', {
+            username: 'System',
+            message: 'Successfully connected to the chatbox.'
+          })
         })
         .catch(error => {
           console.error('Error querying database: ' + error.stack);
         });
+        socket.on('new-message', (uncleanmessage) => {
+          const message = escapeHtml(uncleanmessage);
+          const chatusername = chatusers[socket.id];
+          console.log(uncleanmessage + "from - " + chatusername);
+          // check if the user has exceeded the rate limit
+          const now = Date.now();
+          if (!messageTimestamps[socket.id]) {
+              messageTimestamps[socket.id] = [];
+          }
+          const userTimestamps = messageTimestamps[socket.id];
+          userTimestamps.push(now);
+  
+          // remove timestamps that are older than the rate limit interval
+          while (userTimestamps.length > 0 && now - userTimestamps[0] > rateLimitInterval) {
+              userTimestamps.shift();
+          }
+  
+          // check if the user has exceeded the rate limit
+          if (userTimestamps.length > maxMessagesPerInterval) {
+              // user has sent too many messages in the specified interval
+              return;
+          }
+  
+          // Broadcast the message
+          if (message === "") {
+            // Emit a system message to inform the user that empty messages are not allowed
+            chatServer.to(socket.id).emit('notification', {
+              title: 'Error',
+              description: `Message nevar but tukšs`,
+              type: 'error'
+            });
+            return; // do not proceed to broadcast the empty message
+        } else if (message.length > 1000) {
+          chatServer.to(socket.id).emit('notification', {
+            title: 'Error',
+            description: `Message ir parāk liels`,
+            type: 'error'
+          });
+          return;
+        }
+          chatServer.emit('receivedMessage', {
+              username: chatusername,
+              message: message,
+          });
+      });
         socket.on('disconnect', () => {
           const username = chatusers[socket.id]
           delete chatusers[socket.id]
