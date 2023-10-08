@@ -28,7 +28,7 @@ if (isLoggedIn()) {
 </head>
 <?php include '../header.php' ?>
     <section class="home">
-<?php include 'main.html' ?>
+<?php include 'main.php' ?>
     </section>
     <script src ="../js/header.js"></script>
 </body>

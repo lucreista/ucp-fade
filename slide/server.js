@@ -33,6 +33,7 @@ const messageTimestamps = {};
 const rateLimitInterval = 1000; // 1 second
 const maxMessagesPerInterval = 3;
 const connectedSockets = {};
+const messageHistory = [];
 let chatusers = {};
 
 // namespaces lai ar vienu socket.io serveri var darities
@@ -230,10 +231,13 @@ chatServer.on('connection', socket => {
           connectedSockets[socket.id] = true;
           chatusers[socket.id] = username;
           console.log(username + ` connected to CHAT (${socket.id})`);
+          const nowconnect = Date.now();
           chatServer.to(socket.id).emit('receivedMessage', {
             username: 'System',
-            message: 'Successfully connected to the chatbox.'
+            message: 'Successfully connected to the chatbox. Loading last 10 messages..',
+            time: nowconnect
           })
+          chatServer.to(socket.id).emit('messageHistory', messageHistory.slice(-10)); // sends history chat 10 last messages
         })
         .catch(error => {
           console.error('Error querying database: ' + error.stack);
@@ -241,7 +245,7 @@ chatServer.on('connection', socket => {
         socket.on('new-message', (uncleanmessage) => {
           const message = escapeHtml(uncleanmessage);
           const chatusername = chatusers[socket.id];
-          console.log(uncleanmessage + "from - " + chatusername);
+          console.log(uncleanmessage + " from - " + chatusername);
           // check if the user has exceeded the rate limit
           const now = Date.now();
           if (!messageTimestamps[socket.id]) {
@@ -260,10 +264,8 @@ chatServer.on('connection', socket => {
               // user has sent too many messages in the specified interval
               return;
           }
-  
-          // Broadcast the message
+
           if (message === "") {
-            // Emit a system message to inform the user that empty messages are not allowed
             chatServer.to(socket.id).emit('notification', {
               title: 'Error',
               description: `Message nevar but tukšs`,
@@ -281,7 +283,14 @@ chatServer.on('connection', socket => {
           chatServer.emit('receivedMessage', {
               username: chatusername,
               message: message,
+              time: now
           });
+          messageHistory.push({ username: chatusername, message: message, time: now });
+      
+          // limit the message history to the last 10 messages
+          if (messageHistory.length > 10) {
+            messageHistory.shift(); // remove the oldest message
+          }
       });
         socket.on('disconnect', () => {
           const username = chatusers[socket.id]

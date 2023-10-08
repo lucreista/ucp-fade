@@ -29,6 +29,7 @@
     --toggle-color: #DDD;
     --text-color: #707070;
     --divider: #D2D2D2;
+    --received: #CDCDCD;
 
     --tran-03: all 0.2s ease;
     --tran-03: all 0.3s ease;
@@ -52,6 +53,7 @@ body.dark{
     --column-hover: #0A0A0A;
     --divider: #2A2A2A;
     --primary-color-hover: #C46001;
+    --received: #f1f0f0;
 }
 ::selection{
     background-color: var(--primary-color);
@@ -629,8 +631,72 @@ body.dark .switch::before{
         margin-bottom: 10px;
     }
   }
-  
+/* Reset default margin and padding for the entire document */
+/* Reset default margin and padding for the entire document */
+/* Reset default margin and padding for the entire document */
+/* Reset default margin and padding for the entire document */
+body, html {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+}
 
+/* Style the chat container */
+.chat-container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+/* Style the chat messages */
+.messages {
+  flex-grow: 1;
+  overflow-y: auto;
+  padding: 10px;
+}
+
+.message {
+  margin: 10px;
+  margin-left: 40px;
+  padding: 10px;
+  border-radius: 10px;
+  max-width: 70%;
+  word-wrap: break-word;
+  white-space: pre-wrap; /* Adjust the maximum width as needed */
+}
+
+.sent {
+  background-color: #007BFF; /* Background color for sent messages */
+  color: #fff;
+  align-self: flex-end; /* Align sent messages to the right */
+}
+
+.received {
+  background-color: var(--received); /* Background color for received messages */
+  align-self: flex-start; /* Align received messages to the left */
+  transition: var(--tran-03);
+}
+
+/* Style the input container */
+
+#message-input {
+  flex-grow: 1;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+}
+
+#send-button {
+  margin-left: 10px;
+  padding: 10px 20px;
+  background-color: #007BFF;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+/* CHAT */
 .users {
   margin-right: 5px;
   position: relative;
@@ -702,7 +768,6 @@ footer h2 {
   margin-right: 10px;
   font-weight: 500;
 }
-
 .dot {
   height: 6px;
   width: 6px;
