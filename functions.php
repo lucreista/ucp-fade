@@ -3,19 +3,47 @@ function cookieCheck() {
     include 'db.php';
     if (isset($_COOKIE["fadesession"])) {
     $realcookie = mysqli_real_escape_string($conn, $_COOKIE['fadesession']);
-    $sql = "SELECT token,mcusername FROM users WHERE token = '$realcookie'";
+    $sql = "SELECT token,mcusername,banned FROM users WHERE token = '$realcookie'";
     $result = $conn->query($sql);
     $userInfo = $result->fetch_assoc();
     $userToken = $userInfo["token"];
-    if ($userToken == $_COOKIE['fadesession']) {
+    $bannedstatus = $userInfo["banned"];
+    if ($userToken == $_COOKIE['fadesession'] && $bannedstatus == 0) {
         $_SESSION["username"] = $userInfo["mcusername"];
         $_SESSION["uuid"] = offlineUUID($userInfo["mcusername"]);
+        } else if ($bannedstatus > 0) {
+           //bannedLogOut();
+            header("Location: https://ucp.fade.lv/banned.php");
         } else
             logOut();
     }
 }
-
-
+function adminCheck() {
+    include 'db.php';
+    if (isset($_COOKIE["fadesession"])) {
+        $realcookie = mysqli_real_escape_string($conn, $_COOKIE['fadesession']);
+        $sql = "SELECT adminlevel FROM users WHERE token = '$realcookie'";
+        $result = $conn->query($sql);
+        $lvlinfo = $result->fetch_assoc();
+        $adminlevel = $lvlinfo["adminlevel"];
+        if ($adminlevel > 0) {
+            return $adminlevel;
+        } else {
+            session_unset();
+            session_destroy();
+            setcookie("fadesession","", time()-3600, "/");
+            unset($_COOKIE['fadesession']);
+            header("Location: https://ucp.fade.lv/dashboard");
+            return $adminlevel;
+        }
+    }
+}
+function bannedLogOut() {
+    session_unset();
+    session_destroy();
+    setcookie("fadesession","", time()-3600, "/");
+    unset($_COOKIE['fadesession']);
+}
 function logOut() {
     session_unset();
     session_destroy();

@@ -24,7 +24,7 @@ if (isLoggedIn()) {
   <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
 
 
-    <title>Slide - ucp.fade.lv</title>
+    <title>Chat - ucp.fade.lv</title>
 </head>
 <?php include '../header.php' ?>
     <section class="home">

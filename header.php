@@ -92,6 +92,19 @@
                             <span class="text nav-text">Chat</span>
                         </a>
                     </li>
+                    <?php 
+                    $adminlvl = adminCheck();
+                    if ($adminlvl > 0) {
+                        echo '<li class="nav-link">
+                        <a  href="/dashboard/admin">
+                            <i class="bx bxl-sketch icon" ></i>
+                            <span class="text nav-text">Admin</span>
+                        </a>
+                    </li>';
+                    } else {
+                        echo '';
+                    }
+                    ?>
                 </ul>
             </div>
 
