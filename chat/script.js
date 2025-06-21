@@ -1,7 +1,17 @@
-const socket = io('https://ucp.fade.lv:8443/chat', {
+// Import socket.io-client if using modules
+// import { io } from 'socket.io-client';
+
+// For development environment
+const socket = io('http://localhost:12000/chat', {
   path: '/socket.io/',
-  secure: true, 
+  secure: false,
 });
+
+// For production environment
+// const socket = io('https://ucp.fade.lv:8443/chat', {
+//   path: '/socket.io/',
+//   secure: true,
+// });
 
 socket.on('connect', () => {
   console.log('Connected to chat Server');
